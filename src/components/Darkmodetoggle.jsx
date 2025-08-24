@@ -12,7 +12,7 @@ function Darkmodetoggle({darkMode,setdarkMode}) {
       >
         <div
           className={`w-7 h-7 rounded-full transition-transform duration-400 ease-in-out ${
-            darkMode ? "bg-white translate-x-9" : "bg-yellow-400 translate-x-0 border-2 border-orange-400"
+            darkMode ? "bg-white translate-x-9" : "bg-black/60 translate-x-0"
           }`}
         ></div>
       </button>
