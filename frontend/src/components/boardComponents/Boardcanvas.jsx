@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { forwardRef, useEffect, useRef, useState } from "react";
+import { useImperativeHandle } from "react";
 
-function Boardcanvas() {
+const Boardcanvas = forwardRef((props, ref) => {
   const canvasRef = useRef();
 
   const currentStroke = useRef(null);
@@ -95,30 +96,23 @@ function Boardcanvas() {
     });
   };
 
-  useEffect(() => {
-    const handleKey = (e) => {
-      // Undo
-      if (e.ctrlKey && (e.key === "z" || e.key === "Z")) {
-        const last = strokes.current.pop();
-        if (last) redostack.current.push(last);
-        redrawCanvas();
-      }
+  useImperativeHandle(ref, () => ({
+    undo() {
+      const last = strokes.current.pop();
+      if (last) redostack.current.push(last);
+      redrawCanvas();
+    },
 
-      // Redo
-      if (e.ctrlKey && (e.key === "y" || e.key === "Y")) {
-        const redoStroke = redostack.current.pop();
-        if (redoStroke) strokes.current.push(redoStroke);
-        redrawCanvas();
-      }
-    };
-
-    window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
-  }, []);
+    redo() {
+      const redoStroke = redostack.current.pop();
+      if (redoStroke) strokes.current.push(redoStroke);
+      redrawCanvas();
+    },
+  }));
 
   return (
     <canvas
-      className="block w-full h-full"
+      className={`block w-full h-full`}
       ref={canvasRef}
       onMouseDown={startDrawing}
       onMouseUp={stopDrawing}
@@ -126,6 +120,6 @@ function Boardcanvas() {
       onMouseLeave={stopDrawing}
     ></canvas>
   );
-}
+});
 
 export default Boardcanvas;
