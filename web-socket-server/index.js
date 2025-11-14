@@ -1,6 +1,6 @@
 import express from "express";
 import http from "http";
-import { Server, Socket } from "socket.io";
+import { Server } from "socket.io";
 import cors from "cors";
 
 const app = express();
@@ -15,14 +15,18 @@ const io = new Server(server, {
   },
 });
 
+io.on("connection", (user) => {
+  console.log(`New user connected ${user.id}`);
 
-io.on("connection",(user) => {
-    console.log(`New user connected ${user.id}`)
+  user.on("join-room", (roomid) => {
+    user.join(roomid);
+    console.log(`User ${user.id} joined room: ${roomid}`);
+  });
 
-    user.on("hellow",() => {
-        user.emit("henlo","ediot")
-    });
-})
+  user.on("draw", (strokeData, roomId) => {
+    user.to(roomId).emit("draw", strokeData);
+  });
+});
 
 server.listen("8000", () => {
   console.log("websocket server listining");

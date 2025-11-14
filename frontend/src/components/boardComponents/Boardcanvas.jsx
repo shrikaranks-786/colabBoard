@@ -1,5 +1,6 @@
 import React, { forwardRef, useEffect, useRef, useState } from "react";
 import { useImperativeHandle } from "react";
+import socket from "../../socket";
 
 const Boardcanvas = forwardRef((props, ref) => {
   const canvasRef = useRef();
@@ -8,7 +9,11 @@ const Boardcanvas = forwardRef((props, ref) => {
   const strokes = useRef([]);
   const redostack = useRef([]);
 
+  const lastX = useRef(0);
+  const lastY = useRef(0);
+
   const [isDrawing, setisDrawing] = useState(false);
+  const { roomId } = props;
 
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -19,11 +24,44 @@ const Boardcanvas = forwardRef((props, ref) => {
     canvas.height = window.innerHeight;
   }, []);
 
+  useEffect(() => {
+    if (!roomId) return;
+
+    const handleDraw = (strokeData) => {
+      drawStroke(strokeData);
+    };
+
+    socket.on("draw", handleDraw);
+
+    return () => {
+      socket.off("draw", handleDraw);
+    };
+  }, [roomId]);
+
+  const drawStroke = (strokeData) => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+
+    const { x1, y1, x2, y2 } = strokeData;
+
+    ctx.lineWidth = 3;
+    ctx.lineCap = "round";
+    ctx.strokeStyle = "black";
+
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+  };
+
   const startDrawing = (e) => {
     if (e.button !== 0) return;
 
     const x = e.nativeEvent.offsetX;
     const y = e.nativeEvent.offsetY;
+
+    lastX.current = x;
+    lastY.current = y;
 
     currentStroke.current = {
       points: [{ x, y }],
@@ -69,6 +107,13 @@ const Boardcanvas = forwardRef((props, ref) => {
     ctx.moveTo(p1.x, p1.y);
     ctx.lineTo(p2.x, p2.y);
     ctx.stroke();
+
+    const strokeData = { x1: lastX.current, x2: x, y1: lastY.current, y2: y };
+
+    socket.emit("draw", strokeData, roomId);
+
+    lastX.current = x;
+    lastY.current = y;
   };
 
   const redrawCanvas = () => {
