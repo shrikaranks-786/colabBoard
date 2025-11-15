@@ -6,7 +6,7 @@ function App() {
   return (
     <div>
       <Routes>
-        <Route path="/board/:userId/:roomId" element={<Board />} />
+        <Route path="/board/:userName/:roomId" element={<Board />} />
       </Routes>
     </div>
   );

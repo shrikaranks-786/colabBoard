@@ -20,18 +20,16 @@ const rooms = new Map();
 io.on("connection", (user) => {
   console.log(`New user connected ${user.id}`);
 
-  user.on("join-room", (roomid) => {
+  user.on("join-room", (roomid, userName) => {
     user.join(roomid);
 
-    if (!rooms.has(roomid)) rooms.set(roomid, new Set());
+    if (!rooms.has(roomid)) rooms.set(roomid, new Map());
 
     const userId = user.id;
 
-    rooms.get(roomid).add(userId);
+    rooms.get(roomid).set(userId, { userId, userName });
 
-    const usersinRoom = Array.from(rooms.get(roomid));
-
-    io.to(roomid).emit("users-in-room", usersinRoom);
+    io.to(roomid).emit("users-in-room", Array.from(rooms.get(roomid).values()));
 
     console.log(`User ${user.id} joined room: ${roomid}`);
   });

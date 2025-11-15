@@ -5,11 +5,11 @@ import Undoredo from "../components/boardComponents/Undoredo";
 import { useParams } from "react-router-dom";
 import socket from "../socket";
 import Cursormovement from "../components/boardComponents/Cursormovement";
-import useCursormove from "../../hooks/useCursormove.js"
+import useCursormove from "../../hooks/useCursormove.js";
 
 function Board() {
   const [lockBoard, setLockBoard] = useState(false);
-  const { roomId } = useParams();
+  const { roomId, userName } = useParams();
 
   const boardRef = useRef();
 
@@ -21,7 +21,7 @@ function Board() {
 
     const handleConnect = () => {
       console.log("Connected! Joining room:", roomId);
-      socket.emit("join-room", roomId);
+      socket.emit("join-room", roomId,userName);
     };
 
     socket.on("connect", handleConnect);
