@@ -31,19 +31,29 @@ io.on("connection", (user) => {
 
     const usersinRoom = Array.from(rooms.get(roomid));
 
-    user.emit("users-in-room", usersinRoom);
+    io.to(roomid).emit("users-in-room", usersinRoom);
 
     console.log(`User ${user.id} joined room: ${roomid}`);
   });
 
   user.on("cursor-move", (data) => {
     const { roomId, userId, x, y } = data;
-    // console.log("cursor moved bro",userId,x,y,roomId)
+
     user.to(roomId).emit("cursor-update", { userId, x, y });
   });
 
   user.on("draw", (strokeData, roomId) => {
     user.to(roomId).emit("draw", strokeData);
+  });
+
+  user.on("disconnect", () => {
+    console.log(`User disconnected ${user.id}`);
+
+    rooms.forEach((users, roomId) => {
+      if (users.delete(user.id)) {
+        io.to(roomId).emit("users-in-room", Array.from(users));
+      }
+    });
   });
 });
 

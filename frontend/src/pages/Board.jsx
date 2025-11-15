@@ -9,11 +9,11 @@ import Cursormovement from "../components/boardComponents/Cursormovement";
 
 function Board() {
   const [lockBoard, setLockBoard] = useState(false);
-  const { roomId, userId } = useParams();
+  const { roomId } = useParams();
 
   const boardRef = useRef();
 
-  const cursorRef = useCursormove(userId, roomId);
+  const cursorRef = useCursormove(roomId);
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
@@ -39,7 +39,7 @@ function Board() {
     return () => {
       socket.off("users-in-room");
     };
-  });
+  }, []);
 
   return (
     <div className="w-screen h-screen relative">
