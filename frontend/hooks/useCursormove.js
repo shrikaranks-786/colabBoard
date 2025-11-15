@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import socket from "../src/socket";
 import { useState } from "react";
 
-const useCursormove = (roomId) => {
+const useCursormove = (roomId, users) => {
   const cursorRef = useRef({});
   const [userId, setUserId] = useState(null);
 
@@ -53,7 +53,17 @@ const useCursormove = (roomId) => {
       const el = cursorRef.current[data.userId];
       console.log(el, "element for cursor", data.userId);
 
-      if (!el) return;
+      if (!el) {
+        setTimeout(() => {
+          const retryEl = cursorRef.current[data.userId];
+          if (retryEl) {
+            retryEl.style.left = `${data.x}px`;
+            retryEl.style.top = `${data.y}px`;
+          }
+        }, 50);
+
+        return;
+      }
 
       el.style.left = `${data.x}px`;
       el.style.top = `${data.y}px`;
@@ -64,7 +74,7 @@ const useCursormove = (roomId) => {
     return () => {
       socket.off("cursor-update", handleCursorUpdate);
     };
-  }, [userId, roomId]);
+  }, [userId, roomId, users]);
 
   return cursorRef;
 };

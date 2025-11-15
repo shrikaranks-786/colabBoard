@@ -13,15 +13,15 @@ function Board() {
 
   const boardRef = useRef();
 
-  const cursorRef = useCursormove(roomId);
   const [users, setUsers] = useState([]);
+  const cursorRef = useCursormove(roomId, users);
 
   useEffect(() => {
     socket.connect();
 
     const handleConnect = () => {
       console.log("Connected! Joining room:", roomId);
-      socket.emit("join-room", roomId,userName);
+      socket.emit("join-room", roomId, userName);
     };
 
     socket.on("connect", handleConnect);
