@@ -7,7 +7,7 @@ import socket from "../socket";
 import Cursormovement from "../components/boardComponents/Cursormovement";
 import useCursormove from "../../hooks/useCursormove.js";
 import Chat from "../components/boardComponents/Chatboard.jsx";
-import useChatmove from "../../hooks/useChatmove.js";
+import useDraggable from "../../hooks/useDraggable.js";
 
 function Board() {
   const [lockBoard, setLockBoard] = useState(false);
@@ -19,7 +19,7 @@ function Board() {
   const [users, setUsers] = useState([]);
 
   const cursorRef = useCursormove(roomId, users);
-  useChatmove(chatBoxref);
+  useDraggable(chatBoxref);
 
   useEffect(() => {
     socket.connect();
@@ -64,7 +64,6 @@ function Board() {
       <Cursormovement cursorRef={cursorRef} users={users} />
 
       <Chat roomId={roomId} chatBoxref={chatBoxref} />
-      
     </div>
   );
 }

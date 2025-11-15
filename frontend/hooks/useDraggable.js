@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-export default function useChatmove(chatBoxRef) {
+export default function useDraggable(chatBoxRef) {
   const dragging = useRef(false);
   const offset = useRef({ x: 0, y: 0 });
 
