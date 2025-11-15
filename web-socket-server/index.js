@@ -15,11 +15,24 @@ const io = new Server(server, {
   },
 });
 
+const rooms = new Map();
+
 io.on("connection", (user) => {
   console.log(`New user connected ${user.id}`);
 
   user.on("join-room", (roomid) => {
     user.join(roomid);
+
+    if (!rooms.has(roomid)) rooms.set(roomid, new Set());
+
+    const userId = user.id;
+
+    rooms.get(roomid).add(userId);
+
+    const usersinRoom = Array.from(rooms.get(roomid));
+
+    user.to(roomid).emit("users-in-room", usersinRoom);
+
     console.log(`User ${user.id} joined room: ${roomid}`);
   });
 

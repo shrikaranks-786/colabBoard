@@ -4,12 +4,17 @@ import Toolbar from "../components/boardComponents/Toolbar";
 import Undoredo from "../components/boardComponents/Undoredo";
 import { useParams } from "react-router-dom";
 import socket from "../socket";
+import { useCursormove } from "../../hooks/useCursorMove";
+import Cursormovement from "../components/boardComponents/Cursormovement";
 
 function Board() {
   const [lockBoard, setLockBoard] = useState(false);
-  const { roomId } = useParams();
+  const { roomId, userId } = useParams();
 
   const boardRef = useRef();
+
+  const { cursorRef } = useCursormove(userId);
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
     socket.connect();
@@ -26,6 +31,16 @@ function Board() {
     };
   }, [roomId]);
 
+  useEffect(() => {
+    socket.on("users-in-room", (usersinRoom) => {
+      setUsers(usersinRoom);
+    });
+
+    return () => {
+      socket.off("users-in-room");
+    };
+  });
+
   return (
     <div className="w-screen h-screen relative">
       <div className="w-full h-auto flex justify-center absolute top-5">
@@ -40,6 +55,8 @@ function Board() {
           redo={() => boardRef.current?.redo()}
         />
       </div>
+
+      <Cursormovement cursorRef={cursorRef}  users={users}/>
     </div>
   );
 }
