@@ -25,7 +25,7 @@ export const useCursormove = (userId) => {
     window.addEventListener("mousemove", handleCursormovement);
 
     return () => {
-      window.removeEventListener("mousemove", handleMove);
+      window.removeEventListener("mousemove", handleCursormovement);
       socket.off("cursor-update");
     };
   }, [userId]);
