@@ -7,15 +7,19 @@ import socket from "../socket";
 import Cursormovement from "../components/boardComponents/Cursormovement";
 import useCursormove from "../../hooks/useCursormove.js";
 import Chat from "../components/boardComponents/Chatboard.jsx";
+import useChatmove from "../../hooks/useChatmove.js";
 
 function Board() {
   const [lockBoard, setLockBoard] = useState(false);
   const { roomId, userName } = useParams();
 
   const boardRef = useRef();
+  const chatBoxref = useRef();
 
   const [users, setUsers] = useState([]);
+
   const cursorRef = useCursormove(roomId, users);
+  useChatmove(chatBoxref);
 
   useEffect(() => {
     socket.connect();
@@ -59,9 +63,8 @@ function Board() {
 
       <Cursormovement cursorRef={cursorRef} users={users} />
 
-      <div className="fixed bottom-[calc(100vh-170px)] right-90 -translate-y-1/2">
-        <Chat roomId={roomId} />
-      </div>
+      <Chat roomId={roomId} chatBoxref={chatBoxref} />
+      
     </div>
   );
 }

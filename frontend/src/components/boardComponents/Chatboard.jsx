@@ -3,7 +3,7 @@ import { IoMdSend } from "react-icons/io";
 import useGetchats from "../../../hooks/useGetchats";
 import socket from "../../socket";
 
-function Chat({ roomId }) {
+function Chat({ roomId, chatBoxref }) {
   const [msg, setMsg] = useState("");
 
   const chatMsg = useGetchats() || [];
@@ -17,7 +17,11 @@ function Chat({ roomId }) {
   };
 
   return (
-    <div className="w-[22vw] h-[70vh] rounded-md shadow-lg border border-gray-300 absolute flex justify-center overflow-hidden">
+    <div
+      ref={chatBoxref}
+      className="w-[22vw] h-[70vh] rounded-md shadow-lg border border-gray-300 flex justify-center overflow-hidden absolute"
+      style={{left : "5px" ,top : "20px"}}
+    >
       <div className="max-h-[80%] overflow-auto w-[90%] no-scrollbar">
         {chatMsg?.map((msg) => {
           return (
