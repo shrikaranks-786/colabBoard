@@ -31,9 +31,14 @@ io.on("connection", (user) => {
 
     const usersinRoom = Array.from(rooms.get(roomid));
 
-    user.to(roomid).emit("users-in-room", usersinRoom);
+    user.emit("users-in-room", usersinRoom);
 
     console.log(`User ${user.id} joined room: ${roomid}`);
+  });
+
+  user.on("cursor-move", (data) => {
+    const { roomId, userId, x, y } = data;
+    user.to(roomId).emit("cursor-update", { userId, x, y });
   });
 
   user.on("draw", (strokeData, roomId) => {

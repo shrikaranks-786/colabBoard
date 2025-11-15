@@ -1,34 +1,34 @@
 import { useEffect, useRef } from "react";
 import socket from "../src/socket";
 
-export const useCursormove = (userId) => {
+export const useCursormove = (userId, roomId) => {
   const cursorRef = useRef({});
 
   useEffect(() => {
-    const handleCursormovement = (e) => {
+    const handleMove = (e) => {
       socket.emit("cursor-move", {
         userId,
+        roomId,
         x: e.clientX,
         y: e.clientY,
       });
     };
 
-    socket.on("cursor-update", (data) => {
-      const elem = cursorRef.current[data.userId];
+    const handleCursorUpdate = (data) => {
+      const el = cursorRef.current[data.userId];
+      if (!el) return;
+      el.style.left = `${data.x}px`;
+      el.style.top = `${data.y}px`;
+    };
 
-      if (!elem) return;
-
-      el.style.left = `${data.x + 10}px`;
-      el.style.top = `${data.y + 10}px`;
-    });
-
-    window.addEventListener("mousemove", handleCursormovement);
+    window.addEventListener("mousemove", handleMove);
+    socket.on("cursor-update", handleCursorUpdate);
 
     return () => {
-      window.removeEventListener("mousemove", handleCursormovement);
-      socket.off("cursor-update");
+      window.removeEventListener("mousemove", handleMove);
+      socket.off("cursor-update", handleCursorUpdate);
     };
-  }, [userId]);
+  }, []);
 
   return cursorRef;
 };

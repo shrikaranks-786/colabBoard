@@ -13,7 +13,7 @@ function Board() {
 
   const boardRef = useRef();
 
-  const { cursorRef } = useCursormove(userId);
+  const cursorRef = useCursormove(userId, roomId);
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
@@ -56,7 +56,7 @@ function Board() {
         />
       </div>
 
-      <Cursormovement cursorRef={cursorRef}  users={users}/>
+      <Cursormovement cursorRef={cursorRef} users={users} />
     </div>
   );
 }
