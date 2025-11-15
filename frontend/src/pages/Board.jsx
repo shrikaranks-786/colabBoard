@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import socket from "../socket";
 import Cursormovement from "../components/boardComponents/Cursormovement";
 import useCursormove from "../../hooks/useCursormove.js";
+import Chat from "../components/boardComponents/chat.jsx";
 
 function Board() {
   const [lockBoard, setLockBoard] = useState(false);
@@ -42,7 +43,7 @@ function Board() {
   }, []);
 
   return (
-    <div className="w-screen h-screen relative">
+    <div className="w-screen h-screen relative overflow-hidden">
       <div className="w-full h-auto flex justify-center absolute top-5">
         <Toolbar lockBoard={lockBoard} setLockBoard={setLockBoard} />
       </div>
@@ -57,6 +58,10 @@ function Board() {
       </div>
 
       <Cursormovement cursorRef={cursorRef} users={users} />
+
+      <div className="fixed bottom-[calc(100vh-170px)] right-90 -translate-y-1/2">
+        <Chat roomId={roomId} />
+      </div>
     </div>
   );
 }

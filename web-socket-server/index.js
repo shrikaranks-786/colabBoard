@@ -53,6 +53,13 @@ io.on("connection", (user) => {
       }
     });
   });
+
+  user.on("send-msg", (roomid, msg) => {
+    const userDetails = rooms.get(roomid).get(user.id);
+    const userId = userDetails.userId;
+    const userName = userDetails.userName;
+    io.to(roomid).emit("get-messages", { userId, userName, msg });
+  });
 });
 
 server.listen("8000", () => {
