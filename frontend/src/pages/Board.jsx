@@ -4,8 +4,8 @@ import Toolbar from "../components/boardComponents/Toolbar";
 import Undoredo from "../components/boardComponents/Undoredo";
 import { useParams } from "react-router-dom";
 import socket from "../socket";
-import { useCursormove } from "../../hooks/useCursorMove";
 import Cursormovement from "../components/boardComponents/Cursormovement";
+import useCursormove from "../../hooks/useCursormove.js"
 
 function Board() {
   const [lockBoard, setLockBoard] = useState(false);

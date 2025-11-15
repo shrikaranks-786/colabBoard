@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import socket from "../src/socket";
 import { useState } from "react";
 
-export const useCursormove = (roomId) => {
+const useCursormove = (roomId) => {
   const cursorRef = useRef({});
   const [userId, setUserId] = useState(null);
 
@@ -21,7 +21,6 @@ export const useCursormove = (roomId) => {
     if (!userId || !roomId) return;
 
     const handleMove = (e) => {
-      
       const myCursor = cursorRef.current[userId];
       if (myCursor) {
         myCursor.style.left = `${e.clientX}px`;
@@ -69,3 +68,5 @@ export const useCursormove = (roomId) => {
 
   return cursorRef;
 };
+
+export default useCursormove;
