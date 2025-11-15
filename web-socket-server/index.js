@@ -38,6 +38,7 @@ io.on("connection", (user) => {
 
   user.on("cursor-move", (data) => {
     const { roomId, userId, x, y } = data;
+    // console.log("cursor moved bro",userId,x,y,roomId)
     user.to(roomId).emit("cursor-update", { userId, x, y });
   });
 

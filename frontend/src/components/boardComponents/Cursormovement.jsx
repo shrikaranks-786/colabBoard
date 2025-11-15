@@ -1,5 +1,3 @@
-import React from "react";
-
 export default function Cursormovement({ cursorRef, users }) {
   return (
     <>
@@ -7,9 +5,11 @@ export default function Cursormovement({ cursorRef, users }) {
         <div
           key={userId}
           ref={(el) => {
-            if (el) cursorRef.current[userId] = el;
+            if (el) {
+              cursorRef.current[userId] = el;
+            }
           }}
-          className="fixed bg-red-500 text-white px-2 py-1 rounded"
+          className="absolute bg-red-500 text-white px-2 py-1 rounded"
           style={{ left: 0, top: 0 }}
         >
           {userId}

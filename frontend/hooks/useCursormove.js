@@ -5,6 +5,8 @@ export const useCursormove = (userId, roomId) => {
   const cursorRef = useRef({});
 
   useEffect(() => {
+    if (!userId || !roomId) return;
+
     const handleMove = (e) => {
       socket.emit("cursor-move", {
         userId,
@@ -15,8 +17,11 @@ export const useCursormove = (userId, roomId) => {
     };
 
     const handleCursorUpdate = (data) => {
+      if (data.userId === userId) return;
       const el = cursorRef.current[data.userId];
+      console.log(el, "element for cursor", data.userId);
       if (!el) return;
+
       el.style.left = `${data.x}px`;
       el.style.top = `${data.y}px`;
     };
@@ -28,7 +33,7 @@ export const useCursormove = (userId, roomId) => {
       window.removeEventListener("mousemove", handleMove);
       socket.off("cursor-update", handleCursorUpdate);
     };
-  }, []);
+  }, [userId, roomId]);
 
   return cursorRef;
 };
