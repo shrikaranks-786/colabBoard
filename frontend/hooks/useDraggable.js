@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
+import socket from "../src/socket";
 
-export default function useDraggable(chatBoxRef) {
+export default function useDraggable(chatBoxRef, roomid) {
   const dragging = useRef(false);
   const offset = useRef({ x: 0, y: 0 });
 
@@ -15,7 +16,7 @@ export default function useDraggable(chatBoxRef) {
 
       offset.current = {
         x: e.clientX - rect.left,
-        y: e.clientY - rect.top
+        y: e.clientY - rect.top,
       };
     };
 
@@ -27,6 +28,8 @@ export default function useDraggable(chatBoxRef) {
 
       chatBoxRef.current.style.left = `${x}px`;
       chatBoxRef.current.style.top = `${y}px`;
+
+      socket.emit("dragg-chat-box",x, y, roomid );
     };
 
     const handleMouseUp = () => {
@@ -41,6 +44,19 @@ export default function useDraggable(chatBoxRef) {
       window.removeEventListener("mousedown", handleMouseDown);
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [chatBoxRef]);
+
+  useEffect(() => {
+    const handleDrag = (x, y) => {
+      chatBoxRef.current.style.left = `${x}px`;
+      chatBoxRef.current.style.top = `${y}px`;
+    };
+
+    socket.on("get-chat-pos", handleDrag);
+
+    return () => {
+      socket.off("get-chat-pos", handleDrag);
     };
   }, [chatBoxRef]);
 }

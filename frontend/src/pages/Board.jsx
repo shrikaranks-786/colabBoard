@@ -19,7 +19,7 @@ function Board() {
   const [users, setUsers] = useState([]);
 
   const cursorRef = useCursormove(roomId, users);
-  useDraggable(chatBoxref);
+  useDraggable(chatBoxref,roomId);
 
   useEffect(() => {
     socket.connect();

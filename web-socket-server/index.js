@@ -44,6 +44,17 @@ io.on("connection", (user) => {
     user.to(roomId).emit("draw", strokeData);
   });
 
+  user.on("send-msg", (roomid, msg) => {
+    const userDetails = rooms.get(roomid).get(user.id);
+    const userId = userDetails.userId;
+    const userName = userDetails.userName;
+    io.to(roomid).emit("get-messages", { userId, userName, msg });
+  });
+
+  user.on("dragg-chat-box", (x, y, roomid) => {
+    user.to(roomid).emit("get-chat-pos", x, y);
+  });
+
   user.on("disconnect", () => {
     console.log(`User disconnected ${user.id}`);
 
@@ -52,13 +63,6 @@ io.on("connection", (user) => {
         io.to(roomId).emit("users-in-room", Array.from(users));
       }
     });
-  });
-
-  user.on("send-msg", (roomid, msg) => {
-    const userDetails = rooms.get(roomid).get(user.id);
-    const userId = userDetails.userId;
-    const userName = userDetails.userName;
-    io.to(roomid).emit("get-messages", { userId, userName, msg });
   });
 });
 
