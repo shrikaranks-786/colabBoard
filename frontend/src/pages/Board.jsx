@@ -6,7 +6,7 @@ import { useParams } from "react-router-dom";
 import socket from "../socket";
 import Cursormovement from "../components/boardComponents/Cursormovement";
 import useCursormove from "../../hooks/useCursormove.js";
-import Chat from "../components/boardComponents/chat.jsx";
+import Chat from "../components/boardComponents/Chatboard.jsx";
 
 function Board() {
   const [lockBoard, setLockBoard] = useState(false);
